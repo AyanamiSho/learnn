@@ -11,7 +11,7 @@
  Target Server Version : 80015
  File Encoding         : 65001
 
- Date: 02/05/2019 22:33:15
+ Date: 03/05/2019 00:20:48
 */
 
 SET NAMES utf8mb4;
@@ -22,22 +22,22 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `class`;
 CREATE TABLE `class`  (
-  `class name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `college` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `class size` double NOT NULL,
-  PRIMARY KEY (`class name`) USING BTREE,
-  CONSTRAINT `g to c` FOREIGN KEY (`class name`) REFERENCES `college` (`class`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '班级从表，记录班级名、与学院从属关系，班级人数。' ROW_FORMAT = Dynamic;
+  `class_id` int(255) NOT NULL,
+  `class_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `college_id` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`class_id`) USING BTREE,
+  INDEX `ctoc`(`college_id`) USING BTREE,
+  CONSTRAINT `ctoc` FOREIGN KEY (`college_id`) REFERENCES `college` (`college_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for college
 -- ----------------------------
 DROP TABLE IF EXISTS `college`;
 CREATE TABLE `college`  (
-  `college` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `class` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`college`) USING BTREE,
-  INDEX `class`(`class`) USING BTREE
+  `college_id` int(11) NOT NULL,
+  `college_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  PRIMARY KEY (`college_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '此为主表，包含两个关联表，以班级名作为外键，关联班级和学生表。\r\n此表记录班级与学院的关系。' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -45,16 +45,14 @@ CREATE TABLE `college`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `student`;
 CREATE TABLE `student`  (
-  `Student ID` int(11) NOT NULL,
-  `Student name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `sex` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `age` int(11) NULL DEFAULT NULL,
-  `ID number` int(11) NULL DEFAULT NULL,
-  `class` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `college` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`Student ID`) USING BTREE,
-  INDEX `s to g`(`class`) USING BTREE,
-  CONSTRAINT `s to g` FOREIGN KEY (`class`) REFERENCES `class` (`class name`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '学生从表，记录学生学号，姓名，性别，年龄，身份证号，所属班级，所属学院。' ROW_FORMAT = Dynamic;
+  `student_id` int(255) NOT NULL,
+  `student_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `class_id` int(11) NULL DEFAULT NULL,
+  `student_sex` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `student_age` int(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`student_id`) USING BTREE,
+  INDEX `stoc`(`class_id`) USING BTREE,
+  CONSTRAINT `stoc` FOREIGN KEY (`class_id`) REFERENCES `class` (`class_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
